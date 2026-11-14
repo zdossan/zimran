@@ -124,13 +124,13 @@ The page shows a progress bar and Back/Next buttons, and keeps answers in React 
 
 **Layout, top to bottom:**
 1. A "Recommended: {plan}" header with `reason`.
-2. If `cheapestMonthly !== bestFor12mBalance`, a callout: "Lowest monthly: {A} {$}. Shrinks your debt fastest: {B}. Here's why we recommend {recommended}."
+2. If `cheapestMonthly !== recommended`, a callout (lead ruling: with the real engine `bestFor12mBalance` is almost always the 10-year Standard, so gating on it would show the callout for nearly everyone): "Lowest monthly: {A} {$}. Shrinks your debt fastest: {B}. Here's why we recommend {recommended}."
 3. Four `PlanCard`s:
    - monthly payment, years to forgiveness, a PSLF badge, `balanceChange12m` ("+$1,198 this year" in red or "−$600" in green);
    - the `ruleRefs` as small text;
    - unavailable plans greyed out with `unavailableReason`.
 4. `PaymentChart`: a Recharts bar chart of monthly payments, with a second series for `balanceChange12m`.
-5. Toggles for dependents (−/+) and filing status (single / joint / separate). These re-run `computePlans`. If married, `FilingPanel` shows joint vs separate, the extra tax and the net saving, with the caveats in a collapsible.
+5. Toggles for dependents (−/+) and filing status (single / joint / separate). These re-run `computePlans`. If married, `FilingPanel` shows joint vs separate, the extra tax and the net saving, with the caveats in a native `<details>` element (there is no shadcn collapsible installed).
 6. Warnings as alerts. `danger` ones go first.
 7. Calls to action:
    - "Check a statement for errors" → `/audit`;

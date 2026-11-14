@@ -18,7 +18,7 @@
 These apply to every plan, P1–P4 included.
 - Never commit secrets. `.env.local` stays gitignored, and `.env.example` lists names only. The names are in spec §5.1a.
 - `RULES_AS_OF = "2026-11-01"` is shown in the UI wherever a number is shown.
-- Money: compute in floats and round to cents half-up (`Math.round(x * 100) / 100`). Display as `$1,234.56` via `formatUSD()` in `lib/format.ts`.
+- Money: compute in floats and round to cents half-up with `round2()` from `lib/format.ts` (EPSILON-corrected half-up). Display as `$1,234.56` via `formatUSD()` in the same file.
 - **Copy that must never appear** in UI, letters or pitch:
   - "forgiveness guaranteed", "get your loans forgiven", "stop collections";
   - "Federal", "National", "U.S.", "Department" or "StudentAid" in the brand;

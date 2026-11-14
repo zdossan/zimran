@@ -178,8 +178,8 @@ Everything is free at hackathon scale except the Anthropic API.
 | **Foundation** (lead's session, about 25 min) | Skeleton, shared format, mocks, layout, footer disclaimer, env template, team `CLAUDE.md` | everything initially; afterwards only `lib/types.ts` changes, and only with a team-wide notice | — |
 | **P1** | Calculation engine and action-plan generator | `lib/engine/**`, `lib/actions/**`, `lib/config/rules.ts` | UI, API routes |
 | **P2** | Landing page, quiz, results | `app/page.tsx`, `app/check/**`, `app/results/**`, `components/funnel/**` | engine internals |
-| **P3** | Statement audit and letters | `app/audit/**`, `app/api/audit/**`, `lib/audit/**`, `lib/letters/**`, `public/samples/**` | engine internals, funnel pages |
-| **P4** | Payments, sessions, trust, pitch | `app/api/checkout/**`, `app/api/stripe/**`, `lib/supabase/**`, `components/paywall/**`, `components/legal/**`, `docs/pitch/**` | engine, audit rules |
+| **P3** | Statement audit and letters | `app/audit/**`, `app/api/audit/**`, `app/api/report/**`, `components/audit/**`, `lib/audit/**`, `lib/letters/**`, `public/samples/**` | engine internals, funnel pages |
+| **P4** | Payments, sessions, trust, pitch | `app/api/checkout/**`, `app/api/billing-portal/**`, `app/checkout/**`, `lib/supabase/**`, `lib/stripe.ts`, `supabase/migrations/**`, `components/paywall/**`, `components/legal/**`, `docs/pitch/**` | engine, audit rules |
 
 ### 5.3 The shared format (`lib/types.ts`)
 The foundation session writes this file. It changes only with a team-wide notice.

@@ -16,7 +16,7 @@
 
 ## Global Constraints
 - Follow the Global Constraints in `00-foundation.md`.
-- Round to cents half-up at these four points: each plan's monthly payment, each month's interest, each match, and each waived amount. Use `round2(x) = Math.round(x * 100) / 100`.
+- Round to cents half-up at these four points: each plan's monthly payment, each month's interest, each match, and each waived amount. **Import `round2` from `@/lib/format` and `RULES_AS_OF` from `@/lib/types`; never redefine them.**
 - `rulesAsOf = "2026-11-01"` on every `PlanComparison`.
 - The 2026 poverty line (48 states and DC) is `15960 + 5680 × (size − 1)`. For Alaska and Hawaii, use the same table and add the `ak-hi-approx` warning.
 - **Multiple loans:** pool all eligible loans. Principal = the sum of balances. Rate = the balance-weighted average rate. Parent PLUS loans are left out, with the `parent-plus-unsupported` warning.
@@ -33,15 +33,14 @@
 ### Task 1: Rule constants and the RAP payment
 
 **Files:**
-- Create: `lib/config/rules.ts`, `lib/engine/rap.ts`, `lib/engine/math.ts`
+- Create: `lib/config/rules.ts`, `lib/engine/rap.ts`
 - Test: `lib/engine/__tests__/rap.test.ts`
 
 **Interfaces:**
 - Produces:
-  - `round2(x: number): number`
   - `rapRate(agi: number): number | null` (null means the flat $120/yr)
   - `rapMonthly(agi: number, dependents: number, ownBal?: number, spouseBal?: number): number`
-  - `RULES_AS_OF`, `FPL_2026`, `MFS_BRACKETS_2026`, `MFS_STD_DEDUCTION_2026 = 16100`
+  - `FPL_2026`, `MFS_BRACKETS_2026`, `MFS_STD_DEDUCTION_2026 = 16100` in `lib/config/rules.ts` (re-export `RULES_AS_OF` from `@/lib/types`)
 
 - [ ] **Step 1: Write the failing tests** (expected values verbatim from `engine_fixtures.py` part A):
   - `rapMonthly(55000, 0)` → `229.17`

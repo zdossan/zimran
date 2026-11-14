@@ -2,8 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  // cacheComponents off: dynamic pages (searchParams, Date) must build without Suspense wrappers in a 24h build.
+  cacheComponents: false,
   turbopack: {
     rules: {
       "*.css": {

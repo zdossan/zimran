@@ -40,7 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# allow the env template
+# any *.env file (e.g. .slg-secrets.env) is a secret
+*.env
+
+# allow the env template (must stay after the .env rules)
 !.env.example
 
 # superpowers plan workspaces (local scratch)
