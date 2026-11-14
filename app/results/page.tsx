@@ -1,11 +1,16 @@
-// PLACEHOLDER — owned by P2 (plans/02-funnel.md, Task 3: results).
-import { MOCK_COMPARISON } from "@/lib/mocks";
+import type { Metadata } from "next";
+import { ResultsScreen } from "@/components/funnel/ResultsScreen";
+
+export const metadata: Metadata = {
+  title: "Your repayment plans — Student Loan Guardian",
+  description: "Every federal repayment plan you qualify for, the one we recommend and why, with the rule behind each number.",
+};
 
 export default function ResultsPage() {
   return (
-    <section className="space-y-2">
-      <p className="text-xs uppercase text-muted-foreground">Results: owned by P2</p>
-      <p className="text-lg">Recommended: {MOCK_COMPARISON.recommended}</p>
-    </section>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Your repayment plans</h1>
+      <ResultsScreen />
+    </div>
   );
 }
