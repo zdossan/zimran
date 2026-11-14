@@ -66,7 +66,7 @@ export function FindingsList({ findings, state, servicer, comparison }: { findin
         <strong>{counts.ok}</strong> OK <span className="text-muted-foreground">· Rules as of November 1, 2026</span>
       </p>
       {first ? (
-        <div className="flex flex-wrap items-center gap-2 rounded-lg border p-3">
+        <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-card p-4 shadow-sm ring-1 ring-border">
           <SeverityBadge s={first.severity} />
           <span className="font-medium">{first.title}</span>
         </div>
@@ -75,7 +75,7 @@ export function FindingsList({ findings, state, servicer, comparison }: { findin
       <Paywall feature="audit-details" state={state}>
         <ul className="space-y-3">
           {findings.map((f) => (
-            <li key={f.id} className="space-y-2 rounded-lg border p-3">
+            <li key={f.id} className="space-y-2 rounded-2xl bg-card p-4 shadow-sm ring-1 ring-border">
               <div className="flex flex-wrap items-center gap-2">
                 <SeverityBadge s={f.severity} />
                 <span className="font-medium">{f.title}</span>

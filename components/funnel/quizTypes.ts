@@ -21,13 +21,14 @@ export interface QuizAnswers {
 
 export type QuizStep = 1 | 2 | 3 | 4 | 5 | 6;
 
-export const STEP_TITLES: Record<QuizStep, string> = {
-  1: "Your income",
-  2: "How you file taxes",
-  3: "Your household",
-  4: "Your federal loans",
-  5: "Where you work",
-  6: "Your plan today",
+/** The question each step asks, shown large in the quiz band. */
+export const STEP_QUESTIONS: Record<QuizStep, string> = {
+  1: "What was your income last year?",
+  2: "How do you file your taxes?",
+  3: "Who's in your household?",
+  4: "Tell us about your loans",
+  5: "Who do you work for?",
+  6: "What plan are you on now?",
 };
 
 export const FILING_OPTIONS: { value: FilingStatus; label: string }[] = [

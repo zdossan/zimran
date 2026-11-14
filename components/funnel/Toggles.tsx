@@ -30,9 +30,9 @@ export function Toggles({
   const married = input.filingStatus === "mfj" || input.filingStatus === "mfs";
 
   return (
-    <section aria-labelledby="whatif-heading" className="space-y-3 rounded-xl border p-4">
+    <section aria-labelledby="whatif-heading" className="space-y-3 rounded-2xl bg-card p-4 shadow-sm ring-1 ring-border">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 id="whatif-heading" className="font-semibold">
+        <h3 id="whatif-heading" className="font-extrabold">
           What if…
         </h3>
         {changed && onReset ? (

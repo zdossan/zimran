@@ -12,8 +12,8 @@ export function FilingPanel({ filing }: { filing: FilingComparison }) {
   const net = filing.netAnnualSavingMfs;
 
   return (
-    <section data-testid="filing-panel" aria-labelledby="filing-heading" className="space-y-3 rounded-xl border p-4">
-      <h3 id="filing-heading" className="font-semibold">
+    <section data-testid="filing-panel" aria-labelledby="filing-heading" className="space-y-3 rounded-2xl bg-card p-4 shadow-sm ring-1 ring-border">
+      <h3 id="filing-heading" className="font-extrabold">
         Filing jointly vs separately
       </h3>
       <dl className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">

@@ -8,8 +8,9 @@ export const metadata: Metadata = {
 
 export default function ResultsPage() {
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Your repayment plans</h1>
+    <div>
+      {/* No spacing utilities here: the band inside ResultsScreen must sit flush under the header. */}
+      <h1 className="sr-only">Your repayment plans</h1>
       <ResultsScreen />
     </div>
   );
