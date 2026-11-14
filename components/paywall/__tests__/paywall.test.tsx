@@ -65,6 +65,19 @@ describe("Paywall", () => {
     expect(screen.queryByText("secret report content")).not.toBeInTheDocument();
   });
 
+  it("lets the plan choices wrap, so 'Annual — $79/yr (save 27%)' never runs off the card on a 390px phone", async () => {
+    vi.mocked(getEntitlement).mockResolvedValue({ pro: false, paidStateBlocked: false });
+
+    render(
+      <Paywall feature="action-plan">
+        <div>plan</div>
+      </Paywall>
+    );
+
+    const picker = await screen.findByRole("radiogroup", { name: "Choose a plan" });
+    expect(picker.className).toMatch(/\bflex-wrap\b/);
+  });
+
   it("shows the block message instead of plan choices when the state is blocked", async () => {
     vi.mocked(getEntitlement).mockResolvedValue({ pro: false, paidStateBlocked: true });
 
