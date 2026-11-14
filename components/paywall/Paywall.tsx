@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 import { getEntitlement, isPaidStateBlocked, DEMO_UNLOCK_KEY } from "@/lib/supabase/entitlement";
+import { getBrowserClient } from "@/lib/supabase/client";
 import type { Entitlement } from "@/lib/types";
 
 export type PaywallFeature = "audit-details" | "letters" | "action-plan" | "report";
@@ -60,9 +61,17 @@ export function Paywall({
   async function handleCheckout() {
     setCheckoutStatus("loading");
     try {
+      // /api/checkout resolves the buyer from this bearer token (no server-side session in
+      // this stack — see lib/supabase/client.ts); omit it if Supabase isn't configured or no
+      // session exists yet, rather than blocking the request.
+      const session = await getBrowserClient()?.auth.getSession();
+      const token = session?.data.session?.access_token;
       const res = await fetch("/api/checkout", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ plan, state }),
       });
       const json: unknown = await res.json().catch(() => null);
