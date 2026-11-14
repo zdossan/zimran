@@ -17,3 +17,19 @@ export function getServiceClient(): SupabaseClient {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }
+
+/**
+ * Resolves the signed-in user id from a request's `Authorization: Bearer <token>` header.
+ * Shared by every app/api/** route handler that needs to know who's calling (checkout,
+ * checkout/confirm, billing-portal) — this stack has no server-side session (see
+ * lib/supabase/client.ts), so the bearer token is the only way to authenticate a route handler.
+ * Returns null for a missing header, an invalid/expired token, or any Supabase error — callers
+ * should treat null as unauthenticated (401).
+ */
+export async function resolveUserId(req: Request): Promise<string | null> {
+  const token = req.headers.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
+  if (!token) return null;
+  const { data, error } = await getServiceClient().auth.getUser(token);
+  if (error || !data.user) return null;
+  return data.user.id;
+}

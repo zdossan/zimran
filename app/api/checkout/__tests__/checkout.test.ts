@@ -25,11 +25,24 @@ const { authGetUser, entitlementsBuilder, stripeMocks } = vi.hoisted(() => {
 
 // Fakes the service-role Supabase client (lib/supabase/server.ts) used by every route handler
 // to resolve the bearer token into a user id, and (for confirm) to upsert entitlements.
+// `resolveUserId` is re-implemented here against the mocked `authGetUser` rather than imported
+// via importActual: the real resolveUserId calls getServiceClient() through its own module's
+// internal reference, not the exported binding, so overriding just getServiceClient on an
+// importActual-ed module doesn't reach it. This mirrors the real implementation's behavior
+// (header parse -> auth.getUser(token) -> null/id) exactly enough to exercise each route's
+// own logic (the thing under test), without re-testing resolveUserId's internals here.
 vi.mock("@/lib/supabase/server", () => ({
   getServiceClient: () => ({
     auth: { getUser: authGetUser },
     from: () => entitlementsBuilder,
   }),
+  resolveUserId: async (req: Request) => {
+    const token = req.headers.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
+    if (!token) return null;
+    const { data, error } = await authGetUser(token);
+    if (error || !data.user) return null;
+    return data.user.id;
+  },
 }));
 
 // Per the brief: vi.mock("stripe") so no real network call is ever attempted. `getStripe()`

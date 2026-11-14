@@ -6,15 +6,7 @@
 // with the service-role key.
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
-import { getServiceClient } from "@/lib/supabase/server";
-
-async function resolveUserId(req: Request): Promise<string | null> {
-  const token = req.headers.get("authorization")?.match(/^Bearer\s+(.+)$/i)?.[1];
-  if (!token) return null;
-  const { data, error } = await getServiceClient().auth.getUser(token);
-  if (error || !data.user) return null;
-  return data.user.id;
-}
+import { getServiceClient, resolveUserId } from "@/lib/supabase/server";
 
 export async function POST(req: Request) {
   const userId = await resolveUserId(req);
