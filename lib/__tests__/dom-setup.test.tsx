@@ -12,6 +12,6 @@ describe("component test setup", () => {
 
   it("renders it again without leftovers from the previous test", () => {
     render(<Disclaimer variant="hero" />);
-    expect(screen.getByText(/independent company/)).toBeInTheDocument();
+    expect(screen.getByText(/may not be the best or only option/)).toBeInTheDocument();
   });
 });
