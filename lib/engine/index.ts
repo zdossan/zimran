@@ -1,18 +1,10 @@
-// STUB — owned by P1 (plans/01-engine.md). Replace bodies; keep signatures.
-import type { ActionItem, BorrowerInput, FilingComparison, PlanComparison } from "@/lib/types";
-import { MOCK_ACTIONS, MOCK_COMPARISON, MOCK_FILING } from "@/lib/mocks";
-
-export function computePlans(input: BorrowerInput): PlanComparison {
-  return { ...MOCK_COMPARISON, input };
-}
-
-export function compareFiling(input: BorrowerInput & { spouseAgi: number }): FilingComparison {
-  void input;
-  return MOCK_FILING;
-}
-
-export function buildActionPlan(c: PlanComparison, today: Date): ActionItem[] {
-  void c;
-  void today;
-  return MOCK_ACTIONS;
-}
+// P1 engine (plans/01-engine.md). Pure functions — safe on client and server.
+export { computePlans } from "@/lib/engine/compute";
+export { compareFiling } from "@/lib/engine/filing";
+export { mfsBracketPenalty } from "@/lib/engine/mfsTax";
+export { rapMonthly, rapRate } from "@/lib/engine/rap";
+export { fpl, ibrMonthly } from "@/lib/engine/ibr";
+export { amortize, standard10, tieredStandard, tieredTermMonths } from "@/lib/engine/amortize";
+export { rapMonthBenefit, simulate12 } from "@/lib/engine/simulate";
+export { recommend } from "@/lib/engine/recommend";
+export { buildActionPlan } from "@/lib/actions/buildActionPlan";
