@@ -21,7 +21,7 @@ This is exactly what a judge does, with no login, on the deployed URL:
 - *(Plan comparison appears)* "Five federal repayment plans, computed live — this engine reproduces 22 of 22 published official worked examples and matches StudentAid.gov to the dollar on monthly payments."
 - *(Toggling +2 kids)* "Household size changes every IDR plan's payment — watch the numbers move."
 - *(Toggling file separately)* "This is the lever almost nobody checks: filing status. For this household, it's worth real money — flagged as an estimate, same as every number on this screen."
-- *(Statement check)* "Now the other half of the product — we don't just pick a plan, we check the bill. Watch this: RAP's principal match is miscalculated on this sample statement."
+- *(Statement check)* "Now the other half of the product — we don't just pick a plan, we check the bill. Watch this: RAP's interest subsidy is short by $40.10 on this sample statement."
 - *(Letter drafted)* "That becomes a letter the borrower reviews and sends themselves. We never contact the servicer for them."
 - *(Paywall + checkout)* "And here's the business model — Stripe test checkout, live, right now."
 
