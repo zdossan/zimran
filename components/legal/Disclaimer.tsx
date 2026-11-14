@@ -11,16 +11,26 @@ const HERO_STYLE = { fontSize: "14px", fontWeight: 700 } as const;
 
 export function Disclaimer({ variant }: { variant: DisclaimerVariant }) {
   const isHero = variant === "hero";
+  // hero and paywall carry deliberate line breaks in texts.ts — each line is its own disclosure
+  // clause (e.g. hero's separate NY §703-cited statements, paywall's "what you're buying" /
+  // "what you're not buying" / "auto-renewal" clauses) and renders as its own <p>. The other
+  // variants are a single unbroken paragraph in the spec, so splitting is a no-op for them
+  // (one line in, one <p> out).
+  const lines = DISCLAIMERS[variant].split("\n");
   return (
-    <p
-      data-variant={variant}
-      className={cn(
-        "leading-relaxed text-muted-foreground",
-        isHero ? "font-bold text-foreground" : "text-xs"
-      )}
-      style={isHero ? HERO_STYLE : undefined}
-    >
-      {DISCLAIMERS[variant]}
-    </p>
+    <div data-variant={variant} className="space-y-1">
+      {lines.map((line, index) => (
+        <p
+          key={index}
+          className={cn(
+            "leading-relaxed text-muted-foreground",
+            isHero ? "font-bold text-foreground" : "text-xs"
+          )}
+          style={isHero ? HERO_STYLE : undefined}
+        >
+          {line}
+        </p>
+      ))}
+    </div>
   );
 }
