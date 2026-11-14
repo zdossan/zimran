@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three directions — Student Loan Guardian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Inter, system-ui, sans-serif; background: #eceae6; color: #1b1b1b; padding: 28px 20px 60px; }
+  .page-title { max-width: 1180px; margin: 0 auto 6px; font-size: 22px; font-weight: 700; }
+  .page-sub { max-width: 1180px; margin: 0 auto 26px; color: #555; font-size: 14px; line-height: 1.5; }
+  .row { max-width: 1180px; margin: 0 auto 28px; background: #fff; border-radius: 18px; padding: 22px; display: grid;
+         grid-template-columns: 280px 1fr; gap: 24px; border: 3px solid transparent; cursor: pointer; transition: border-color .15s; }
+  .row:hover { border-color: #c9c4ba; }
+  .row.selected { border-color: #0E6B53; box-shadow: 0 0 0 4px rgba(14,107,83,.15); }
+  .row h2 { font-size: 20px; margin-bottom: 6px; }
+  .row .tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: #f0eee9; margin-bottom: 10px; }
+  .row .tag.pick { background: #E6F4ED; color: #0E6B53; }
+  .row p.desc { font-size: 14px; line-height: 1.55; color: #444; margin-bottom: 10px; }
+  .row ul { font-size: 13px; line-height: 1.55; color: #444; padding-left: 18px; }
+  .row ul li { margin-bottom: 4px; }
+  .phones { display: flex; gap: 22px; flex-wrap: wrap; }
+  .phone { width: 340px; height: 700px; border-radius: 34px; border: 9px solid #111; overflow: hidden; position: relative; background: #fff; flex-shrink: 0; }
+  .phone .scroll { height: 100%; overflow-y: auto; scrollbar-width: none; }
+  .phone .scroll::-webkit-scrollbar { display: none; }
+  .cap { font-size: 12px; color: #777; margin-top: 8px; text-align: center; width: 340px; }
+  .tab { font-variant-numeric: tabular-nums; }
+
+  /* ---------- A: Calm money app ---------- */
+  .A { background: #FBF8F2; color: #1F2A28; font-family: Inter, sans-serif; }
+  .A .nav { display:flex; justify-content:space-between; align-items:center; padding: 14px 16px; }
+  .A .logo { font-family: Fraunces, serif; font-weight: 700; font-size: 17px; letter-spacing: -.01em; }
+  .A .logo span { color: #0E6B53; }
+  .A .menu { width: 34px; height: 34px; border-radius: 10px; border: 1px solid #E4DED3; display:grid; place-items:center; font-size: 15px; }
+  .A .wrap { padding: 4px 16px 20px; }
+  .A .sample { font-size: 12px; background: #FFF4DF; color: #8A5300; border-radius: 10px; padding: 8px 10px; margin-bottom: 12px; }
+  .A .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #0E6B53; margin-bottom: 6px; }
+  .A .hero { background: #fff; border: 1px solid #E8E2D6; border-radius: 18px; padding: 18px; box-shadow: 0 1px 0 rgba(0,0,0,.02), 0 10px 30px -18px rgba(31,42,40,.25); }
+  .A .hero .plan { font-family: Fraunces, serif; font-size: 18px; font-weight: 600; }
+  .A .hero .num { font-family: Fraunces, serif; font-size: 52px; font-weight: 600; letter-spacing: -.02em; line-height: 1.05; margin: 4px 0 2px; }
+  .A .hero .num small { font-family: Inter, sans-serif; font-size: 15px; font-weight: 500; color: #5d6b67; letter-spacing: 0; }
+  .A .hero .why { font-size: 14px; line-height: 1.5; color: #3d4a47; margin: 8px 0 12px; }
+  .A .chips { display:flex; flex-wrap: wrap; gap: 6px; }
+  .A .chip { font-size: 12px; font-weight: 600; padding: 5px 9px; border-radius: 999px; background: #E6F4ED; color: #0E6B53; }
+  .A .chip.neutral { background: #F1EEE7; color: #3d4a47; }
+  .A .sentence { font-size: 14px; line-height: 1.6; margin: 14px 2px; color: #3d4a47; }
+  .A .pill { font-weight: 600; padding: 1px 6px; border-radius: 6px; background: #E6F4ED; color: #0E6B53; }
+  .A .pill.red { background: #FDECEA; color: #B42318; }
+  .A .deadline { border-left: 4px solid #B45309; background: #FFF7ED; border-radius: 10px; padding: 10px 12px; font-size: 13px; color: #7A3A06; margin-bottom: 14px; }
+  .A .deadline b { color: #B45309; }
+  .A h3 { font-family: Fraunces, serif; font-size: 17px; font-weight: 600; margin: 4px 2px 8px; }
+  .A table { width: 100%; border-collapse: collapse; background:#fff; border: 1px solid #E8E2D6; border-radius: 14px; overflow: hidden; font-size: 13px; }
+  .A th { text-align:left; font-size: 11px; font-weight: 600; color: #6b7774; padding: 8px 10px; background: #F7F4EE; }
+  .A td { padding: 10px; border-top: 1px solid #EFEAE0; }
+  .A td.r, .A th.r { text-align: right; }
+  .A tr.rec td { background: #F2FAF6; font-weight: 600; }
+  .A tr.rec td:first-child { box-shadow: inset 3px 0 0 #0E6B53; }
+  .A .up { color: #B42318; } .A .down { color: #0E6B53; }
+  .A .muted { color: #9aa3a0; }
+  .A .more { font-size: 13px; color: #0E6B53; font-weight: 600; margin: 8px 2px 14px; }
+  .A .cta { display:block; text-align:center; background:#0E6B53; color:#fff; font-weight:600; font-size: 15px; padding: 14px; border-radius: 12px; margin: 6px 0 8px; }
+  .A .cta2 { display:block; text-align:center; background:#fff; border: 1px solid #DCD5C8; color:#1F2A28; font-weight:600; font-size: 14px; padding: 12px; border-radius: 12px; }
+  .A .legal { font-size: 11px; color: #7c8784; margin-top: 14px; line-height: 1.5; }
+  .A .legal u { color: #0E6B53; text-decoration: none; font-weight: 600; }
+  /* A quiz */
+  .A .qtop { padding: 12px 16px 6px; }
+  .A .bar { height: 4px; background: #ECE6DA; border-radius: 99px; overflow: hidden; margin: 8px 0 4px; }
+  .A .bar i { display:block; height:100%; width: 33%; background:#0E6B53; border-radius: 99px; }
+  .A .step { font-size: 11px; color: #6b7774; }
+  .A .echo { display:inline-flex; gap: 6px; align-items:center; font-size: 12px; background:#F1EEE7; padding: 5px 10px; border-radius: 999px; margin: 14px 0 12px; color:#3d4a47; }
+  .A .q { font-family: Fraunces, serif; font-size: 28px; font-weight: 600; line-height: 1.15; letter-spacing: -.01em; margin-bottom: 6px; }
+  .A .qhint { font-size: 13px; color: #5d6b67; margin-bottom: 16px; }
+  .A .opt { display:flex; align-items:center; justify-content: space-between; background:#fff; border:1px solid #E4DED3; border-radius: 14px; padding: 16px; margin-bottom: 10px; font-size: 15px; font-weight: 500; }
+  .A .opt small { display:block; font-size: 12px; color:#6b7774; font-weight: 400; margin-top: 2px; }
+  .A .opt .ring { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #CFC7B8; flex-shrink: 0; }
+  .A .opt.on { border-color: #0E6B53; box-shadow: 0 0 0 3px rgba(14,107,83,.12); background: #FBFEFC; }
+  .A .opt.on .ring { border: 7px solid #0E6B53; }
+  .A .sticky { position:absolute; left:0; right:0; bottom:0; padding: 12px 16px 18px; background: linear-gradient(transparent, #FBF8F2 30%); }
+
+  /* ---------- B: Bold fintech ---------- */
+  .B { background: #F5F6FB; color: #14142B; font-family: Manrope, Inter, sans-serif; }
+  .B .top { background: radial-gradient(120% 90% at 10% 0%, #6A61F0 0%, #4840BB 45%, #2A2475 100%); color: #fff; padding: 14px 16px 26px; border-radius: 0 0 28px 28px; }
+  .B .nav { display:flex; justify-content:space-between; align-items:center; margin-bottom: 18px; }
+  .B .logo { font-weight: 800; font-size: 16px; letter-spacing: -.02em; }
+  .B .menu { width: 34px; height: 34px; border-radius: 12px; background: rgba(255,255,255,.14); display:grid; place-items:center; }
+  .B .label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .75; }
+  .B .num { font-size: 66px; font-weight: 800; letter-spacing: -.04em; line-height: 1; margin: 8px 0 4px; }
+  .B .num small { font-size: 18px; font-weight: 700; opacity: .8; letter-spacing: 0; }
+  .B .plan { font-size: 17px; font-weight: 700; }
+  .B .glass { display:flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .B .glass span { background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22); padding: 7px 11px; border-radius: 12px; font-size: 13px; font-weight: 700; }
+  .B .body { padding: 16px; }
+  .B .why { background:#fff; border-radius: 18px; padding: 14px; font-size: 14px; line-height: 1.5; font-weight: 500; box-shadow: 0 8px 24px -16px rgba(42,36,117,.4); margin-top: -2px; }
+  .B .why b { color: #4840BB; }
+  .B h3 { font-size: 16px; font-weight: 800; margin: 18px 2px 10px; letter-spacing: -.01em; }
+  .B .pc { background:#fff; border-radius: 16px; padding: 12px 14px; display:flex; justify-content: space-between; align-items:center; margin-bottom: 8px; box-shadow: 0 1px 0 rgba(20,20,43,.04); }
+  .B .pc.rec { outline: 2px solid #4840BB; }
+  .B .pc .n { font-weight: 800; font-size: 15px; }
+  .B .pc .s { font-size: 12px; color: #6E6E8F; font-weight: 600; margin-top: 2px; }
+  .B .pc .p { font-size: 20px; font-weight: 800; letter-spacing: -.02em; text-align:right; }
+  .B .pc .d { font-size: 12px; font-weight: 700; text-align:right; }
+  .B .up { color: #E0245E; } .B .down { color: #12A150; }
+  .B .badge { font-size: 10px; font-weight: 800; color: #fff; background: #4840BB; padding: 2px 6px; border-radius: 6px; margin-left: 6px; vertical-align: middle; }
+  .B .alert { background: #FFF1E6; color: #9A4A00; border-radius: 14px; padding: 12px; font-size: 13px; font-weight: 600; margin: 4px 0 12px; }
+  .B .cta { display:block; text-align:center; background:#4840BB; color:#fff; font-weight:800; font-size: 15px; padding: 15px; border-radius: 16px; box-shadow: 0 10px 22px -10px rgba(72,64,187,.8); }
+  .B .legal { font-size: 11px; color: #8a8aa6; margin-top: 12px; line-height: 1.5; }
+  /* B quiz */
+  .B .qhead { background: radial-gradient(120% 90% at 10% 0%, #6A61F0 0%, #4840BB 45%, #2A2475 100%); color:#fff; padding: 14px 16px 22px; border-radius: 0 0 28px 28px; }
+  .B .dots { display:flex; gap: 6px; margin: 4px 0 18px; }
+  .B .dots i { height: 6px; flex:1; border-radius: 99px; background: rgba(255,255,255,.25); }
+  .B .dots i.on { background: #fff; }
+  .B .q { font-size: 28px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+  .B .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px; }
+  .B .tile { background:#fff; border-radius: 18px; padding: 16px 12px; font-weight: 700; font-size: 14px; min-height: 96px; display:flex; flex-direction: column; justify-content: space-between; box-shadow: 0 1px 0 rgba(20,20,43,.05); }
+  .B .tile .ic { width: 30px; height: 30px; border-radius: 10px; background: #EEEDFC; display:grid; place-items:center; font-size: 16px; }
+  .B .tile.on { background: #4840BB; color: #fff; }
+  .B .tile.on .ic { background: rgba(255,255,255,.2); }
+  .B .sticky { position:absolute; left:0; right:0; bottom:0; padding: 12px 16px 18px; }
+
+  /* ---------- C: Polish only ---------- */
+  .C { background: #fff; color: #18181b; font-family: Inter, sans-serif; }
+  .C .nav { display:flex; justify-content:space-between; align-items:center; padding: 12px 16px; border-bottom: 1px solid #ececec; font-size: 13px; }
+  .C .nav b { font-size: 14px; }
+  .C .nav span { color: #555; }
+  .C .wrap { padding: 16px; }
+  .C h1 { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+  .C .rec { border: 1px solid #0E6B53; border-radius: 12px; padding: 14px; background: #F4FAF7; margin-bottom: 12px; }
+  .C .rec .l { font-size: 12px; font-weight: 600; color: #0E6B53; }
+  .C .rec .p { font-size: 20px; font-weight: 700; margin: 2px 0; }
+  .C .rec .n { font-size: 26px; font-weight: 700; }
+  .C .rec .n small { font-size: 13px; font-weight: 500; color: #666; }
+  .C .rec .w { font-size: 13px; color: #444; line-height: 1.5; margin-top: 6px; }
+  .C .callout { border: 1px solid #e5e5e5; border-radius: 10px; padding: 10px 12px; font-size: 13px; line-height: 1.5; margin-bottom: 12px; color: #333; }
+  .C .card { border: 1px solid #e5e5e5; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+  .C .card .t { display:flex; gap: 6px; align-items:center; font-weight: 600; font-size: 15px; }
+  .C .badge { font-size: 10px; border: 1px solid #ddd; border-radius: 999px; padding: 1px 6px; font-weight: 500; color: #444; }
+  .C .badge.g { background: #0E6B53; color: #fff; border-color: #0E6B53; }
+  .C .card .n { font-size: 22px; font-weight: 700; margin: 4px 0 2px; }
+  .C .card .n small { font-size: 12px; font-weight: 400; color: #666; }
+  .C .card .b { font-size: 13px; font-weight: 500; }
+  .C .card .f { font-size: 10.5px; color: #888; margin-top: 6px; line-height: 1.4; }
+  .C .up { color: #c0262d; }
+  /* C quiz */
+  .C .form { border: 1px solid #e5e5e5; border-radius: 14px; padding: 14px; }
+  .C .s { font-size: 11px; color: #777; }
+  .C .pb { height: 6px; background: #f0f0f0; border-radius: 99px; margin: 6px 0 12px; overflow:hidden; }
+  .C .pb i { display:block; height:100%; width:33%; background:#0E6B53; }
+  .C .h { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
+  .C .leg { font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+  .C .ro { display:flex; gap: 8px; align-items:center; border: 1px solid #e5e5e5; border-radius: 10px; padding: 10px; font-size: 13px; margin-bottom: 8px; }
+  .C .ro.on { border-color: #0E6B53; background: #F4FAF7; }
+  .C .ro i { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #999; }
+  .C .ro.on i { border: 4.5px solid #0E6B53; }
+  .C .btns { display:flex; justify-content: space-between; margin-top: 12px; }
+  .C .btns span { font-size: 13px; padding: 8px 14px; border-radius: 8px; border: 1px solid #ddd; }
+  .C .btns span.go { background: #18181b; color: #fff; border-color: #18181b; }
+</style>
+</head>
+<body>
+  <h1 class="page-title">Three directions for Student Loan Guardian</h1>
+  <p class="page-sub">Each row shows the results page (top of screen, real numbers for the “single parent, 2 kids” sample) and one quiz question, on a 390px phone. Scroll inside each phone. Click a row to pick it, then tell me what you think in the terminal — mixing is fine (“A, but with B’s big number”).</p>
+
+  <!-- ===================== A ===================== -->
+  <section class="row" data-choice="A" onclick="toggleSelect(this)">
+    <div>
+      <span class="tag pick">My pick</span>
+      <h2>A · Calm money app</h2>
+      <p class="desc">Warm cream background, serif headlines (Fraunces), evergreen as the only strong colour. Feels like Summer, Monarch and NerdWallet: trustworthy, human, not salesy.</p>
+      <ul>
+        <li>Results open with one answer card: plan, $/mo, why, two chips.</li>
+        <li>One sentence with money pills explains the trade-off.</li>
+        <li>Compact 4-row table instead of four tall cards.</li>
+        <li>Quiz: one question per screen, big tappable cards, sticky Continue.</li>
+        <li>Legal: one line + “Details” instead of paragraphs.</li>
+      </ul>
+    </div>
+    <div class="phones">
+      <div>
+        <div class="phone"><div class="scroll A">
+          <div class="nav"><div class="logo">Student Loan <span>Guardian</span></div><div class="menu">☰</div></div>
+          <div class="wrap">
+            <div class="sample">Sample borrower — not your numbers. <b>Start your check →</b></div>
+            <div class="eyebrow">Your best plan</div>
+            <div class="hero">
+              <div class="plan">Repayment Assistance Plan (RAP)</div>
+              <div class="num tab">$129<small> /month</small></div>
+              <div class="why">The lowest payment that doesn’t grow your balance.</div>
+              <div class="chips"><span class="chip">↓ $600 balance this year</span><span class="chip neutral">Counts toward PSLF ✓</span></div>
+            </div>
+            <p class="sentence">IBR is <span class="pill">$12 cheaper</span> a month, but your balance would <span class="pill red">grow $1,198</span> this year. RAP shrinks it instead.</p>
+            <div class="deadline"><b>SAVE deadline: Nov 30, 2026</b> · 15 days left. Choose a plan or you may be moved to Standard.</div>
+            <h3>All your plans</h3>
+            <table class="tab">
+              <tr><th>Plan</th><th class="r">$/mo</th><th class="r">This year</th><th class="r">PSLF</th></tr>
+              <tr class="rec"><td>RAP</td><td class="r">$129</td><td class="r down">−$600</td><td class="r">✓</td></tr>
+              <tr><td>IBR</td><td class="r">$117</td><td class="r up">+$1,198</td><td class="r">✓</td></tr>
+              <tr><td>10-yr Standard</td><td class="r">$454</td><td class="r down">−$2,937</td><td class="r">✓</td></tr>
+              <tr><td class="muted">Tiered</td><td class="r muted" colspan="3">Not available</td></tr>
+            </table>
+            <div class="more">See the rules behind each number ⌄</div>
+            <span class="cta">Get my dated action plan</span>
+            <span class="cta2">Check a statement for errors</span>
+            <p class="legal">Estimate · Rules as of Nov 1, 2026 · Not legal, tax or financial advice · Not affiliated with the Dept. of Education · <u>Details ⌄</u></p>
+          </div>
+        </div></div>
+        <div class="cap">Results</div>
+      </div>
+      <div>
+        <div class="phone"><div class="scroll A" style="position:relative">
+          <div class="nav"><div class="logo">Student Loan <span>Guardian</span></div><div class="menu">✕</div></div>
+          <div class="qtop">
+            <div class="step">Step 2 of 6</div>
+            <div class="bar"><i></i></div>
+            <div class="echo">Income: $55,000 ✎</div>
+            <div class="q">How do you file your taxes?</div>
+            <div class="qhint">Your filing status changes which income counts.</div>
+            <div class="opt">Single<span class="ring"></span></div>
+            <div class="opt on"><div>Head of household<small>Unmarried and paying for a home for a dependent</small></div><span class="ring"></span></div>
+            <div class="opt">Married, filing jointly<span class="ring"></span></div>
+            <div class="opt">Married, filing separately<span class="ring"></span></div>
+          </div>
+          <div class="sticky"><span class="cta">Continue</span></div>
+        </div></div>
+        <div class="cap">Quiz, step 2</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== B ===================== -->
+  <section class="row" data-choice="B" onclick="toggleSelect(this)">
+    <div>
+      <span class="tag">Most striking</span>
+      <h2>B · Bold fintech</h2>
+      <p class="desc">Indigo gradient hero with a giant number, heavy sans-serif (Manrope), app-like cards. Feels like Wealthfront or Rocket Money: confident and punchy on a projector.</p>
+      <ul>
+        <li>The monthly number is the hero, white on indigo.</li>
+        <li>Plans as tappable rows with big numbers.</li>
+        <li>Quiz: 2×2 icon tiles, segmented progress.</li>
+        <li>Risk: reads more “sales” than “on your side”.</li>
+      </ul>
+    </div>
+    <div class="phones">
+      <div>
+        <div class="phone"><div class="scroll B">
+          <div class="top">
+            <div class="nav"><div class="logo">Student Loan Guardian</div><div class="menu">☰</div></div>
+            <div class="label">Your best plan · RAP</div>
+            <div class="num tab">$129<small>/mo</small></div>
+            <div class="plan">Repayment Assistance Plan</div>
+            <div class="glass"><span>↓ $600 this year</span><span>PSLF ✓</span></div>
+          </div>
+          <div class="body">
+            <div class="why">Lowest payment that <b>doesn’t grow your balance</b>. IBR is $12 cheaper but grows it $1,198 this year.</div>
+            <h3>Compare plans</h3>
+            <div class="pc rec"><div><div class="n">RAP<span class="badge">BEST</span></div><div class="s">PSLF ✓ · 30 yrs</div></div><div><div class="p tab">$129</div><div class="d down tab">−$600/yr</div></div></div>
+            <div class="pc"><div><div class="n">IBR</div><div class="s">PSLF ✓ · 20 yrs</div></div><div><div class="p tab">$117</div><div class="d up tab">+$1,198/yr</div></div></div>
+            <div class="pc"><div><div class="n">10-yr Standard</div><div class="s">PSLF ✓</div></div><div><div class="p tab">$454</div><div class="d down tab">−$2,937/yr</div></div></div>
+            <div class="alert">⏰ SAVE deadline Nov 30 — 15 days left</div>
+            <span class="cta">Get my action plan</span>
+            <p class="legal">Estimate · Rules as of Nov 1, 2026 · Not advice · Details</p>
+          </div>
+        </div></div>
+        <div class="cap">Results</div>
+      </div>
+      <div>
+        <div class="phone"><div class="scroll B" style="position:relative">
+          <div class="qhead">
+            <div class="nav"><div class="logo">Student Loan Guardian</div><div class="menu">✕</div></div>
+            <div class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <div class="q">How do you file your taxes?</div>
+          </div>
+          <div class="grid">
+            <div class="tile"><span class="ic">👤</span>Single</div>
+            <div class="tile on"><span class="ic">🏠</span>Head of household</div>
+            <div class="tile"><span class="ic">💍</span>Married, jointly</div>
+            <div class="tile"><span class="ic">📄</span>Married, separately</div>
+          </div>
+          <div class="sticky"><span class="cta">Continue</span></div>
+        </div></div>
+        <div class="cap">Quiz, step 2</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== C ===================== -->
+  <section class="row" data-choice="C" onclick="toggleSelect(this)">
+    <div>
+      <span class="tag">Fastest</span>
+      <h2>C · Polish only</h2>
+      <p class="desc">Today’s structure with the font bug fixed, an evergreen accent and a highlighted answer box. Least work and no layout changes, but it still looks like a template.</p>
+      <ul>
+        <li>Same page order: answer, callout, four tall plan cards, charts.</li>
+        <li>Quiz stays a form in a box with Back/Next.</li>
+        <li>Legal text placement unchanged.</li>
+      </ul>
+    </div>
+    <div class="phones">
+      <div>
+        <div class="phone"><div class="scroll C">
+          <div class="nav"><b>Student Loan Guardian</b><span>Free check · Check a statement</span></div>
+          <div class="wrap">
+            <h1>Your repayment plans</h1>
+            <div class="rec"><div class="l">Recommended</div><div class="p">RAP</div><div class="n tab">$129.17 <small>per month</small></div><div class="w">You're not on a PSLF track, so we pick the lowest payment that doesn't grow your balance.</div></div>
+            <div class="callout">Lowest monthly: IBR at $116.83. Shrinks your debt fastest: 10-year Standard. Here's why we recommend RAP: IBR is $12.34 less per month, but your balance would grow about $1,198 this year…</div>
+            <div class="card"><div class="t">RAP plan <span class="badge g">Recommended</span><span class="badge">Counts toward PSLF</span></div><div class="n tab">$129.17 <small>per month</small></div><div class="b">Balance shrinks $600.00 this year</div><div class="f">Rules: 34 CFR 685.209(b)(2) · 34 CFR 685.209(f)(5) · 34 CFR 685.209(h)(4) · 34 CFR 685.209(o)(2) · Rules as of Nov 1, 2026</div></div>
+            <div class="card"><div class="t">IBR plan <span class="badge">Counts toward PSLF</span></div><div class="n tab">$116.83 <small>per month</small></div><div class="b up">Balance grows $1,198.08 this year</div><div class="f">Rules: 34 CFR 685.209(b)(4) · 34 CFR 685.209(f)(3) · Rules as of Nov 1, 2026</div></div>
+            <div class="card"><div class="t">10-year Standard plan</div><div class="n tab">$454.19 <small>per month</small></div><div class="b">Balance shrinks $2,936.75 this year</div></div>
+          </div>
+        </div></div>
+        <div class="cap">Results</div>
+      </div>
+      <div>
+        <div class="phone"><div class="scroll C">
+          <div class="nav"><b>Student Loan Guardian</b><span>Free check · Check a statement</span></div>
+          <div class="wrap">
+            <h1>Find your cheapest legal plan</h1>
+            <div class="form">
+              <div class="s">Step 2 of 6</div>
+              <div class="pb"><i></i></div>
+              <div class="h">How you file taxes</div>
+              <div class="leg">How do you file your taxes?</div>
+              <div class="ro"><i></i>Single</div>
+              <div class="ro on"><i></i>Head of household</div>
+              <div class="ro"><i></i>Married, filing jointly</div>
+              <div class="ro"><i></i>Married, filing separately</div>
+              <div class="btns"><span>Back</span><span class="go">Next</span></div>
+            </div>
+          </div>
+        </div></div>
+        <div class="cap">Quiz, step 2</div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
