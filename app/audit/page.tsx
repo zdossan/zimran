@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AuditView } from "@/components/audit/AuditView";
+import { Band } from "@/components/brand/Band";
 
 export const metadata: Metadata = {
   title: "Check a statement — Student Loan Guardian",
@@ -8,14 +9,15 @@ export const metadata: Metadata = {
 
 export default function AuditPage() {
   return (
-    <div className="space-y-6">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-bold">Check your servicer statement for errors</h1>
-        <p className="text-muted-foreground">
+    <div>
+      {/* The band must be the first element so it sits flush under the header. */}
+      <Band>
+        <h1 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">Check your servicer statement for errors</h1>
+        <p className="mt-3 max-w-2xl text-white/85">
           We read your statement, then check it against the federal Repayment Assistance Plan rules: the interest subsidy,
           the $50 principal match, the plan you&apos;re on, and when the bill was sent.
         </p>
-      </header>
+      </Band>
       <AuditView />
     </div>
   );

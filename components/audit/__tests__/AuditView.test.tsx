@@ -59,6 +59,18 @@ describe("AuditView", () => {
     fireEvent.click(await screen.findByRole("button", { name: /Download Guardian report/ }));
     expect(await screen.findByText(/couldn't build your report/i)).toBeInTheDocument();
   });
+
+  it("leads the results with the verdict", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(new Response(JSON.stringify(auditBody), { status: 200, headers: { "content-type": "application/json" } })),
+    );
+    render(<AuditView />);
+    fireEvent.click(screen.getByRole("button", { name: "Check the MOHELA statement sample" }));
+    const verdict = await screen.findByRole("heading", { name: "1 possible error" });
+    expect(verdict).toHaveFocus(); // moved there so phones land on the answer
+    expect(screen.getByText(/Sample statement — not real data/i)).toHaveClass("text-[#C81E4F]");
+  });
 });
 
 describe("FindingsList", () => {

@@ -14,7 +14,8 @@ const SAMPLES: { label: string; input: BorrowerInput }[] = [
   { label: "Try: married teacher", input: SAMPLE_BORROWERS.F4 },
 ];
 
-export function SampleButtons() {
+/** `glass` = translucent white for use on the indigo band; `light` (default) for light backgrounds. */
+export function SampleButtons({ tone = "light" }: { tone?: "light" | "glass" }) {
   const router = useRouter();
   return (
     <div className="flex flex-wrap gap-2">
@@ -23,6 +24,7 @@ export function SampleButtons() {
           key={s.label}
           type="button"
           variant="outline"
+          className={tone === "glass" ? "h-10 rounded-xl border-white/30 bg-[#14142B]/25 font-semibold text-white hover:bg-[#14142B]/40 hover:text-white" : "h-10 rounded-xl font-semibold"}
           onClick={async () => {
             await saveSessionData("borrowerInput", s.input).catch(() => undefined);
             saveFunnelNotes([SAMPLE_NOTE]);

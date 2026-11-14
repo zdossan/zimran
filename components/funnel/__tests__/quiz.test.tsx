@@ -26,7 +26,47 @@ describe("Quiz", () => {
     render(<Quiz />);
     next();
     expect(screen.getByRole("alert")).toHaveTextContent(/income/i);
-    expect(screen.getByRole("heading", { name: "Your income" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "What was your income last year?" })).toBeInTheDocument();
+  });
+
+  it("shows the error inside the action bar, which sticks (not fixed) so it releases before the footer", () => {
+    render(<Quiz />);
+    next();
+    const bar = screen.getByTestId("quiz-actions");
+    expect(bar).toContainElement(screen.getByRole("alert"));
+    expect(bar.className).toMatch(/\bsticky\b/);
+    expect(bar.className).not.toMatch(/\bfixed\b/);
+  });
+
+  it("tiles show a solid focus ring", () => {
+    render(<Quiz />);
+    type(/income/i, "55000");
+    next();
+    const tile = screen.getAllByRole("radio")[0].closest("label")!;
+    expect(tile.className).toContain("has-[:focus-visible]:ring-primary");
+    expect(tile.className).not.toMatch(/focus-visible\]:ring-primary\/\d+/);
+  });
+
+  it("answer chips jump back to their step with the answer kept", () => {
+    render(<Quiz />);
+    type(/income/i, "$55,000");
+    next();
+    choose("Head of household");
+    next();
+    fireEvent.click(screen.getByRole("button", { name: "Edit income: $55,000" }));
+    expect(screen.getByRole("heading", { name: "What was your income last year?" })).toBeInTheDocument();
+    expect(screen.getByLabelText(/income/i)).toHaveValue("$55,000");
+    next();
+    expect(screen.getByRole("button", { name: "Edit income: $55,000" })).toBeInTheDocument();
+  });
+
+  it("tiles stay real radio buttons (visually hidden) for keyboard and screen readers", () => {
+    render(<Quiz />);
+    type(/income/i, "55000");
+    next();
+    const radios = screen.getAllByRole("radio");
+    expect(radios).toHaveLength(4);
+    for (const r of radios) expect(r).toHaveClass("sr-only");
   });
 
   it("walks all six steps, saves the answers and opens the results", async () => {

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Upload } from "lucide-react";
 import type { AuditResult, BorrowerInput } from "@/lib/types";
 import type { SampleId } from "@/lib/audit";
 import { buildActionPlan, computePlans } from "@/lib/engine";
@@ -12,6 +13,7 @@ import { Paywall } from "@/components/paywall/Paywall";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 import { ExtractedFields } from "@/components/audit/ExtractedFields";
 import { FindingsList } from "@/components/audit/FindingsList";
+import { AuditVerdict } from "@/components/audit/AuditVerdict";
 
 const SAMPLES: { id: SampleId; label: string; blurb: string }[] = [
   { id: "mohela-subsidy-error", label: "MOHELA statement", blurb: "RAP borrower — is the interest subsidy right?" },
@@ -103,10 +105,10 @@ export function AuditView() {
   return (
     <div className="space-y-8">
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold">Try a sample statement</h2>
+        <h2 className="text-lg font-extrabold">Try a sample statement</h2>
         <div className="grid gap-3 sm:grid-cols-3">
           {SAMPLES.map((s) => (
-            <Card key={s.id}>
+            <Card key={s.id} className="rounded-2xl shadow-sm">
               <CardHeader>
                 <CardTitle className="text-base">{s.label}</CardTitle>
                 <CardDescription>{s.blurb}</CardDescription>
@@ -124,8 +126,11 @@ export function AuditView() {
         </div>
       </section>
 
-      <section className="space-y-2">
-        <h2 className="text-lg font-semibold">
+      <section className="space-y-3 rounded-2xl border-2 border-dashed border-primary/30 bg-card p-6 text-center">
+        <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-secondary text-primary">
+          <Upload aria-hidden className="size-6" />
+        </span>
+        <h2 className="text-lg font-extrabold">
           <label htmlFor="statement-file">Or upload your statement</label>
         </h2>
         <p id="statement-file-hint" className="text-sm text-muted-foreground">
@@ -137,7 +142,7 @@ export function AuditView() {
           aria-describedby="statement-file-hint"
           type="file"
           accept="application/pdf,image/png,image/jpeg"
-          className="block w-full max-w-full text-sm file:mr-3 file:rounded-md file:border file:px-3 file:py-1.5"
+          className="mx-auto block w-full max-w-sm text-sm file:mr-3 file:rounded-xl file:border-0 file:bg-primary file:px-4 file:py-2.5 file:font-bold file:text-primary-foreground"
           onChange={(e) => {
             const f = e.target.files?.[0];
             if (f) upload(f);
@@ -162,13 +167,14 @@ export function AuditView() {
 
       {status === "done" && result ? (
         <section className="space-y-6">
+          <AuditVerdict findings={result.findings} />
           {usedCache ? (
             <Alert>
               <AlertTitle>Using pre-read sample data</AlertTitle>
               <AlertDescription>Live statement reading isn&apos;t available right now, so this sample was checked from data we read earlier.</AlertDescription>
             </Alert>
           ) : null}
-          {result.extraction.isSample ? <p className="text-xs font-semibold uppercase text-destructive">Sample statement — not real data</p> : null}
+          {result.extraction.isSample ? <p className="text-xs font-semibold uppercase text-[#C81E4F]">Sample statement — not real data</p> : null}
 
           <Card>
             <CardHeader>

@@ -9,14 +9,12 @@ export const metadata: Metadata = {
 
 export default function CheckPage() {
   return (
-    <div className="space-y-6">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-bold">Find your cheapest legal plan</h1>
-        <p className="text-muted-foreground">Six short questions. No login, no email, and we never ask for your FSA ID.</p>
-      </header>
+    <div>
+      {/* No spacing utilities before the quiz: its band must sit flush under the header. */}
+      <h1 className="sr-only">Find your cheapest legal plan</h1>
       <Quiz />
-      <section className="space-y-2">
-        <h2 className="text-sm font-semibold">Or see a sample borrower</h2>
+      <section className="mx-auto mt-10 max-w-xl space-y-2">
+        <h2 className="text-sm font-bold">Or see a sample borrower</h2>
         <SampleButtons />
       </section>
     </div>

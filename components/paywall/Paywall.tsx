@@ -108,7 +108,7 @@ export function Paywall({
           </p>
         ) : (
           <>
-            <div role="radiogroup" aria-label="Choose a plan" className="flex gap-2">
+            <div role="radiogroup" aria-label="Choose a plan" className="flex flex-wrap gap-2">
               <Button
                 type="button"
                 role="radio"
