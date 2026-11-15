@@ -4,12 +4,33 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Our brand: indigo, anchored on the primary #4840BB and the deep #2A2475 (Bolt layout, our colours).
+   Components use brand-* only, so the palette changes here and nowhere else. */
+@theme {
+  --color-brand-50: #F4F3FD;
+  --color-brand-100: #EEEDFC;
+  --color-brand-200: #D9D6F7;
+  --color-brand-300: #B8B3F0;
+  --color-brand-400: #8F88EC;
+  --color-brand-500: #6A61F0;
+  --color-brand-600: #5249D6;
+  --color-brand-700: #4840BB;
+  --color-brand-800: #3A3398;
+  --color-brand-900: #2A2475;
+  --color-brand-950: #1C1850;
+}
+
+/* The signature gradient, used only as an accent (brand mark, card top strips, closing call to action). */
+@utility bg-brand-gradient {
+  background: radial-gradient(120% 90% at 90% 100%, #6a61f0 0%, #4840bb 45%, #2a2475 100%);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-manrope);
+  --font-sans: var(--font-poppins);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-manrope);
+  --font-heading: var(--font-poppins);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -49,7 +70,7 @@
 }
 
 :root {
-  /* "Bold fintech" theme (docs/superpowers/specs/2026-11-15-ui-redesign-design.md). */
+  /* Bolt layout in our colours: indigo primary, lavender-grey page, deep-navy ink. */
   --background: #F5F6FB;
   --foreground: #14142B;
   --card: #FFFFFF;
@@ -61,19 +82,19 @@
   --secondary: #EEEDFC;
   --secondary-foreground: #2A2475;
   --muted: #EEEFF6;
-  --muted-foreground: #6E6E8F;
+  --muted-foreground: #5B5B7A;
   --accent: #EEEDFC;
   --accent-foreground: #2A2475;
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: #B91C1C;
   --border: #E4E4F0;
-  --input: #E4E4F0;
+  --input: #C9C9DC;
   --ring: #4840BB;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 1rem;
+  --radius: 0.875rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -128,5 +149,41 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* Keyboard focus: a solid 2px ring. The shadcn default (outline-ring/50) was ~2:1 on paper.
+   In @layer base so utilities win: elements with their own ring (focus-visible:outline-none) or
+   outline-none (focus targets like the quiz heading) keep their own look. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Headings: tight leading, as in the prototype. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

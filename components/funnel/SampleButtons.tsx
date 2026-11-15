@@ -1,38 +1,31 @@
 "use client";
-// One-click sample borrowers (owned by P2). They load made-up answers, not the visitor's.
+// One-click sample borrowers (owned by P2). They load made-up answers, not the visitor's, and open the results.
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { saveSessionData } from "@/lib/supabase/session";
-import { SAMPLE_BORROWERS } from "@/lib/mocks";
 import { saveFunnelNotes } from "@/components/funnel/notesStore";
-import type { BorrowerInput } from "@/lib/types";
+import { SAMPLE_KEYS, SAMPLE_NOTE, SAMPLES, type SampleKey } from "@/components/funnel/samples";
+import { buttonClass } from "@/components/brand/kit";
 
-export const SAMPLE_NOTE = "Sample borrower — these are not your numbers. Start the check to see yours.";
+export { SAMPLE_NOTE };
 
-const SAMPLES: { label: string; input: BorrowerInput }[] = [
-  { label: "Try: single parent, 2 kids", input: SAMPLE_BORROWERS.F2b },
-  { label: "Try: married teacher", input: SAMPLE_BORROWERS.F4 },
-];
-
-/** `glass` = translucent white for use on the indigo band; `light` (default) for light backgrounds. */
-export function SampleButtons({ tone = "light" }: { tone?: "light" | "glass" }) {
+/** Saves a sample borrower (with the "not your numbers" note) and opens /results. */
+export function useOpenSample() {
   const router = useRouter();
+  return async (key: SampleKey) => {
+    await saveSessionData("borrowerInput", SAMPLES[key].input).catch(() => undefined);
+    saveFunnelNotes([SAMPLE_NOTE]);
+    router.push("/results");
+  };
+}
+
+export function SampleButtons() {
+  const open = useOpenSample();
   return (
-    <div className="flex flex-wrap gap-2">
-      {SAMPLES.map((s) => (
-        <Button
-          key={s.label}
-          type="button"
-          variant="outline"
-          className={tone === "glass" ? "h-10 rounded-xl border-white/30 bg-[#14142B]/25 font-semibold text-white hover:bg-[#14142B]/40 hover:text-white" : "h-10 rounded-xl font-semibold"}
-          onClick={async () => {
-            await saveSessionData("borrowerInput", s.input).catch(() => undefined);
-            saveFunnelNotes([SAMPLE_NOTE]);
-            router.push("/results");
-          }}
-        >
-          {s.label}
-        </Button>
+    <div className="flex flex-wrap justify-center gap-2">
+      {SAMPLE_KEYS.map((key) => (
+        <button key={key} type="button" className={buttonClass("secondary", "text-sm")} onClick={() => void open(key)}>
+          {SAMPLES[key].button}
+        </button>
       ))}
     </div>
   );

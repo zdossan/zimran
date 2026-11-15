@@ -1,22 +1,19 @@
 import type { Metadata } from "next";
 import { Quiz } from "@/components/funnel/Quiz";
-import { SampleButtons } from "@/components/funnel/SampleButtons";
+import { isSampleKey } from "@/components/funnel/samples";
 
 export const metadata: Metadata = {
-  title: "Free plan check — Student Loan Guardian",
+  title: "Free plan check — Owen",
   description: "Six questions, no login. See every federal repayment plan you qualify for and the rule behind each number.",
 };
 
-export default function CheckPage() {
+/** `/check?sample=F2b` (or F4) opens the quiz pre-filled with that sample borrower; anything else is ignored. */
+export default async function CheckPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+  const { sample } = await searchParams;
   return (
-    <div>
-      {/* No spacing utilities before the quiz: its band must sit flush under the header. */}
+    <div className="pb-10">
       <h1 className="sr-only">Find your cheapest legal plan</h1>
-      <Quiz />
-      <section className="mx-auto mt-10 max-w-xl space-y-2">
-        <h2 className="text-sm font-bold">Or see a sample borrower</h2>
-        <SampleButtons />
-      </section>
+      <Quiz initialSample={isSampleKey(sample) ? sample : undefined} />
     </div>
   );
 }
