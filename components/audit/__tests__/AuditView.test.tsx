@@ -28,8 +28,10 @@ afterEach(() => {
 describe("AuditView", () => {
   it("labels the upload control and says where the file goes", () => {
     render(<AuditView />);
-    expect(screen.getByLabelText(/upload your statement/i)).toHaveAttribute("type", "file");
-    expect(screen.getByText(/Anthropic/)).toBeInTheDocument();
+    const input = screen.getByLabelText(/upload your statement/i);
+    expect(input).toHaveAttribute("type", "file");
+    expect(input).toHaveAttribute("accept", "application/pdf,image/png,image/jpeg");
+    expect(document.getElementById(input.getAttribute("aria-describedby")!)).toHaveTextContent(/Anthropic/);
   });
 
   it("gives each sample button its own accessible name", () => {
@@ -56,7 +58,7 @@ describe("AuditView", () => {
     vi.stubGlobal("fetch", fetchMock);
     render(<AuditView />);
     fireEvent.click(screen.getByRole("button", { name: "Check the MOHELA statement sample" }));
-    fireEvent.click(await screen.findByRole("button", { name: /Download Guardian report/ }));
+    fireEvent.click(await screen.findByRole("button", { name: /Download your Owen report/ }));
     expect(await screen.findByText(/couldn't build your report/i)).toBeInTheDocument();
   });
 
@@ -69,7 +71,40 @@ describe("AuditView", () => {
     fireEvent.click(screen.getByRole("button", { name: "Check the MOHELA statement sample" }));
     const verdict = await screen.findByRole("heading", { name: "1 possible error" });
     expect(verdict).toHaveFocus(); // moved there so phones land on the answer
-    expect(screen.getByText(/Sample statement — not real data/i)).toHaveClass("text-[#C81E4F]");
+    expect(screen.getByText(/Sample statement — not real data/i)).toHaveClass("text-sky-900");
+  });
+});
+
+describe("AuditView: monthly history", () => {
+  it("a real statement check is added to the monthly check-in history; a sample never is", async () => {
+    window.localStorage.clear();
+    const realBody = { ...auditBody, result: { ...auditBody.result, extraction: { ...mohela, isSample: false } } };
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValueOnce(new Response(JSON.stringify(auditBody), { status: 200, headers: { "content-type": "application/json" } }))
+        .mockResolvedValueOnce(new Response(JSON.stringify(realBody), { status: 200, headers: { "content-type": "application/json" } })),
+    );
+    render(<AuditView />);
+    fireEvent.click(screen.getByRole("button", { name: "Check the MOHELA statement sample" }));
+    await screen.findByRole("heading", { name: "1 possible error" });
+    expect(window.localStorage.getItem("slg_audit_history")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Check the MOHELA statement sample" }));
+    await vi.waitFor(() => expect(JSON.parse(window.localStorage.getItem("slg_audit_history") ?? "[]")).toHaveLength(1));
+  });
+});
+
+describe("FindingsList: dispute tracking", () => {
+  it("an error can be tracked as a dispute in the plan, with its amount", async () => {
+    window.localStorage.clear();
+    const { loadDisputes } = await import("@/components/plan/progress");
+    const findings = auditStatement(mohela);
+    const error = findings.find((f) => f.severity === "error")!;
+    render(<FindingsList findings={findings} servicer="MOHELA (SAMPLE)" />);
+    fireEvent.click(screen.getByRole("button", { name: "Track this dispute" }));
+    expect(screen.getByRole("button", { name: "Tracking in your plan" })).toBeDisabled();
+    expect(loadDisputes()[0]).toMatchObject({ title: error.title, servicer: "MOHELA (SAMPLE)", amount: 40.1, status: "sent" });
   });
 });
 

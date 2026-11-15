@@ -40,4 +40,16 @@ describe("AuditVerdict", () => {
     expect(screen.getByRole("heading", { name: "1 possible error" })).toBeInTheDocument();
     expect(screen.getByText("Your RAP interest subsidy looks short by $40.10")).toBeInTheDocument();
   });
+
+  it("the card's tone follows the answer: error, check, or all clear — never green when something is off", () => {
+    const tone = (findings: AuditFinding[]) => {
+      const { container, unmount } = render(<AuditVerdict findings={findings} />);
+      const t = container.querySelector("[data-tone]")!.getAttribute("data-tone");
+      unmount();
+      return t;
+    };
+    expect(tone(auditStatement(SAMPLE_EXTRACTIONS["mohela-subsidy-error"]))).toBe("error");
+    expect(tone([warn("a")])).toBe("warn");
+    expect(tone(auditStatement(SAMPLE_EXTRACTIONS["edfinancial-ok"]))).toBe("ok");
+  });
 });

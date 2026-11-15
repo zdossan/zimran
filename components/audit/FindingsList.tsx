@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Paywall } from "@/components/paywall/Paywall";
 import { Disclaimer } from "@/components/legal/Disclaimer";
+import { isoToday, newDispute } from "@/components/plan/disputes";
+import { loadDisputes, saveDisputes } from "@/components/plan/progress";
 
 const SEVERITY: Record<AuditFinding["severity"], { label: string; variant: "destructive" | "secondary" | "outline" }> = {
   error: { label: "Possible error", variant: "destructive" },
@@ -52,6 +54,8 @@ function LetterDialog({ finding, state, servicer, comparison, onClose }: { findi
 
 export function FindingsList({ findings, state, servicer, comparison }: { findings: AuditFinding[]; state?: string; servicer?: string; comparison?: PlanComparison }) {
   const [letterFor, setLetterFor] = useState<AuditFinding | null>(null);
+  // Errors sent to the plan's dispute tracker (Owen Plus) from this list.
+  const [tracked, setTracked] = useState<string[]>([]);
   const counts = {
     error: findings.filter((f) => f.severity === "error").length,
     warn: findings.filter((f) => f.severity === "warn").length,
@@ -86,11 +90,27 @@ export function FindingsList({ findings, state, servicer, comparison }: { findin
                 {f.actual !== undefined ? `On statement ${formatUSD(f.actual)} · ` : ""}
                 Rule: {f.ruleRef}
               </p>
-              {f.letterTemplateId && f.severity !== "ok" ? (
-                <Button variant="outline" size="sm" onClick={() => setLetterFor(f)}>
-                  Draft letter
-                </Button>
-              ) : null}
+              <div className="flex flex-wrap gap-2">
+                {f.letterTemplateId && f.severity !== "ok" ? (
+                  <Button variant="outline" size="sm" onClick={() => setLetterFor(f)}>
+                    Draft letter
+                  </Button>
+                ) : null}
+                {f.severity === "error" ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={tracked.includes(f.id)}
+                    onClick={() => {
+                      const amount = f.expected !== undefined && f.actual !== undefined ? Math.round(Math.abs(f.expected - f.actual) * 100) / 100 : undefined;
+                      saveDisputes([newDispute({ title: f.title, servicer, amount, sentOn: isoToday(new Date()) }), ...loadDisputes()]);
+                      setTracked((t) => [...t, f.id]);
+                    }}
+                  >
+                    {tracked.includes(f.id) ? "Tracking in your plan" : "Track this dispute"}
+                  </Button>
+                ) : null}
+              </div>
             </li>
           ))}
         </ul>
