@@ -1,19 +1,19 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Upload } from "lucide-react";
+import { FileText, ShieldAlert, Upload } from "lucide-react";
 import type { AuditResult, BorrowerInput } from "@/lib/types";
 import type { SampleId } from "@/lib/audit";
 import { buildActionPlan, computePlans } from "@/lib/engine";
 import { loadSessionData, saveSessionData } from "@/lib/supabase/session";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, buttonClass } from "@/components/brand/kit";
 import { Progress } from "@/components/ui/progress";
 import { Paywall } from "@/components/paywall/Paywall";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 import { ExtractedFields } from "@/components/audit/ExtractedFields";
 import { FindingsList } from "@/components/audit/FindingsList";
 import { AuditVerdict } from "@/components/audit/AuditVerdict";
+import { recordAudit } from "@/components/plan/progress";
 
 const SAMPLES: { id: SampleId; label: string; blurb: string }[] = [
   { id: "mohela-subsidy-error", label: "MOHELA statement", blurb: "RAP borrower — is the interest subsidy right?" },
@@ -50,6 +50,7 @@ export function AuditView() {
     setUsedCache(Boolean(body.usedCache));
     setStatus("done");
     saveSessionData("audit", body.result).catch(() => undefined);
+    recordAudit(body.result, new Date()); // monthly check-in history (real statements only)
   }
 
   async function checkSample(sampleId: SampleId) {
@@ -90,7 +91,7 @@ export function AuditView() {
       const url = URL.createObjectURL(await res.blob());
       const a = document.createElement("a");
       a.href = url;
-      a.download = "guardian-report.pdf";
+      a.download = "owen-report.pdf";
       a.click();
       URL.revokeObjectURL(url);
     } catch {
@@ -104,51 +105,70 @@ export function AuditView() {
 
   return (
     <div className="space-y-8">
-      <section className="space-y-3">
-        <h2 className="text-lg font-extrabold">Try a sample statement</h2>
-        <div className="grid gap-3 sm:grid-cols-3">
+      <section aria-labelledby="samples-heading" className="space-y-4">
+        <h2 id="samples-heading" className="text-xl font-medium tracking-tight">
+          Try a sample statement
+        </h2>
+        <div className="grid gap-4 md:grid-cols-3">
           {SAMPLES.map((s) => (
-            <Card key={s.id} className="rounded-2xl shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-base">{s.label}</CardTitle>
-                <CardDescription>{s.blurb}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-2">
-                <Button size="sm" onClick={() => checkSample(s.id)} disabled={status === "loading"} aria-label={`Check the ${s.label} sample`}>
+            <Card key={s.id} className="flex flex-col p-5 sm:p-6">
+              <FileText aria-hidden className="size-6 text-sky-700" />
+              <p className="mt-4 text-base font-semibold">{s.label}</p>
+              <p className="mt-1 text-sm text-slate-600">{s.blurb}</p>
+              <div className="mt-auto space-y-2 pt-5">
+                <button type="button" className={buttonClass("secondary", "w-full text-sm")} onClick={() => checkSample(s.id)} disabled={status === "loading"} aria-label={`Check the ${s.label} sample`}>
                   Check this sample
-                </Button>
-                <a className="text-sm underline" href={`/samples/${s.id}.pdf`} target="_blank" rel="noreferrer" aria-label={`View the ${s.label} sample PDF`}>
+                </button>
+                <a
+                  className="flex min-h-11 items-center justify-center text-sm font-medium text-brand-800 underline underline-offset-4"
+                  href={`/samples/${s.id}.pdf`}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`View the ${s.label} sample PDF`}
+                >
                   View PDF
                 </a>
-              </CardContent>
+              </div>
             </Card>
           ))}
         </div>
       </section>
 
-      <section className="space-y-3 rounded-2xl border-2 border-dashed border-primary/30 bg-card p-6 text-center">
-        <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-secondary text-primary">
-          <Upload aria-hidden className="size-6" />
-        </span>
-        <h2 className="text-lg font-extrabold">
-          <label htmlFor="statement-file">Or upload your statement</label>
+      <section aria-labelledby="upload-heading" className="space-y-4">
+        <h2 id="upload-heading" className="text-xl font-medium tracking-tight">
+          Or upload your own
         </h2>
-        <p id="statement-file-hint" className="text-sm text-muted-foreground">
-          PDF, PNG or JPEG, up to 4 MB. Cover your account number if you like — we only need the amounts and dates. Your file is sent to
-          our AI provider (Anthropic) to read the numbers; we don&apos;t store the file.
+        <label
+          htmlFor="statement-file"
+          className="group flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-white px-6 py-10 text-center transition hover:border-brand-600 hover:bg-brand-50/40 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-60 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-2"
+        >
+          <span className="grid size-14 place-items-center rounded-2xl bg-brand-100 text-brand-900 transition group-hover:scale-105">
+            <Upload aria-hidden className="size-6" />
+          </span>
+          <span className="mt-4 text-lg font-semibold">Upload your statement</span>
+          <span className="mt-1 text-sm text-slate-600">PDF, PNG or JPEG, up to 4 MB</span>
+          <span className={buttonClass("secondary", "mt-4 text-sm")}>Choose a file</span>
+          <input
+            id="statement-file"
+            aria-describedby="statement-file-hint"
+            type="file"
+            accept="application/pdf,image/png,image/jpeg"
+            className="sr-only"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) upload(f);
+              e.target.value = "";
+            }}
+            disabled={status === "loading"}
+          />
+        </label>
+        <p id="statement-file-hint" className="flex gap-2 text-sm text-slate-600">
+          <ShieldAlert aria-hidden className="mt-0.5 size-4 shrink-0 text-slate-500" />
+          <span>
+            Cover your account number if you like — we only need the amounts and dates. Your file is sent to our AI provider (Anthropic) to read the
+            numbers; we don&apos;t store the file.
+          </span>
         </p>
-        <input
-          id="statement-file"
-          aria-describedby="statement-file-hint"
-          type="file"
-          accept="application/pdf,image/png,image/jpeg"
-          className="mx-auto block w-full max-w-sm text-sm file:mr-3 file:rounded-xl file:border-0 file:bg-primary file:px-4 file:py-2.5 file:font-bold file:text-primary-foreground"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) upload(f);
-          }}
-          disabled={status === "loading"}
-        />
       </section>
 
       {status === "loading" ? (
@@ -174,27 +194,27 @@ export function AuditView() {
               <AlertDescription>Live statement reading isn&apos;t available right now, so this sample was checked from data we read earlier.</AlertDescription>
             </Alert>
           ) : null}
-          {result.extraction.isSample ? <p className="text-xs font-semibold uppercase text-[#C81E4F]">Sample statement — not real data</p> : null}
+          {result.extraction.isSample ? (
+            <p className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-sm font-semibold text-sky-900">Sample statement — not real data</p>
+          ) : null}
 
           <Card>
-            <CardHeader>
-              <CardTitle className="text-base">What we read</CardTitle>
-              <CardDescription>Check these against your statement. The checks below only use these values.</CardDescription>
-            </CardHeader>
-            <CardContent>
+            <h2 className="text-lg font-medium tracking-tight">What we read</h2>
+            <p className="mt-1 text-sm text-slate-600">Check these against your statement. The checks below only use these values.</p>
+            <div className="mt-4">
               <ExtractedFields x={result.extraction} />
-            </CardContent>
+            </div>
           </Card>
 
           <div className="space-y-3">
-            <h2 className="text-lg font-semibold">What we checked</h2>
+            <h2 className="text-xl font-medium tracking-tight">What we checked</h2>
             <FindingsList findings={result.findings} state={input?.state} servicer={result.extraction.servicer} comparison={comparison} />
           </div>
 
           <Paywall feature="report" state={input?.state}>
-            <Button onClick={downloadReport} disabled={downloading}>
-              {downloading ? "Preparing…" : "Download Guardian report (PDF)"}
-            </Button>
+            <button type="button" className={buttonClass("primary")} onClick={downloadReport} disabled={downloading}>
+              {downloading ? "Preparing…" : "Download your Owen report (PDF)"}
+            </button>
             {reportError ? (
               <p role="alert" className="text-sm text-destructive">
                 {reportError}
@@ -202,7 +222,9 @@ export function AuditView() {
             ) : null}
           </Paywall>
 
-          <Disclaimer variant="audit" />
+          <div className="rounded-2xl bg-slate-100 p-5">
+            <Disclaimer variant="audit" />
+          </div>
         </section>
       ) : null}
     </div>

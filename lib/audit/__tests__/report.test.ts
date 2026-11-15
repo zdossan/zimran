@@ -7,7 +7,7 @@ import { RULES_AS_OF } from "@/lib/types";
 
 const head = (b: Uint8Array) => new TextDecoder("latin1").decode(b.subarray(0, 4));
 
-describe("Guardian report PDF", () => {
+describe("Owen report PDF", () => {
   it("renders a PDF for the mock audit", async () => {
     const bytes = await buildGuardianReport(MOCK_AUDIT);
     expect(head(bytes)).toBe("%PDF");
