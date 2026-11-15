@@ -1,6 +1,25 @@
 import { describe, it, expect } from "vitest";
 import { parseMoney, parsePercent, toBorrowerInput, validateStep } from "@/components/funnel/mapping";
 import type { QuizAnswers } from "@/components/funnel/quizTypes";
+import { SAMPLE_ANSWERS, SAMPLE_KEYS, SAMPLES } from "@/components/funnel/samples";
+import { computePlans } from "@/lib/engine";
+
+describe("sample answers", () => {
+  it("walking a sample through the quiz gives the same engine answer as opening its results directly", () => {
+    for (const key of SAMPLE_KEYS) {
+      const viaQuiz = computePlans(toBorrowerInput(SAMPLE_ANSWERS[key]).input);
+      const direct = computePlans(SAMPLES[key].input);
+      expect(viaQuiz.recommended).toBe(direct.recommended);
+      expect(viaQuiz.results.map((r) => [r.plan, r.available, r.monthlyPayment, r.balanceChange12m])).toEqual(
+        direct.results.map((r) => [r.plan, r.available, r.monthlyPayment, r.balanceChange12m]),
+      );
+    }
+  });
+
+  it("sample answers pass every step's validation", () => {
+    for (const key of SAMPLE_KEYS) for (const step of [1, 2, 3, 4, 5, 6] as const) expect(validateStep(step, SAMPLE_ANSWERS[key])).toBeNull();
+  });
+});
 
 const F2B_LIKE: QuizAnswers = {
   agi: "55,000",

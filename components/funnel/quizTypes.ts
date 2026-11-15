@@ -31,6 +31,16 @@ export const STEP_QUESTIONS: Record<QuizStep, string> = {
   6: "What plan are you on now?",
 };
 
+/** One line under each question: why we ask. */
+export const STEP_HINTS: Record<QuizStep, string> = {
+  1: "Income drives most payments. A rough number is fine.",
+  2: "Your filing status changes the math.",
+  3: "Your family size changes your payment.",
+  4: "Approximate numbers are fine.",
+  5: "Public-service jobs can count toward PSLF.",
+  6: "On SAVE? Your notice date sets your deadline.",
+};
+
 export const FILING_OPTIONS: { value: FilingStatus; label: string }[] = [
   { value: "single", label: "Single" },
   { value: "hoh", label: "Head of household" },

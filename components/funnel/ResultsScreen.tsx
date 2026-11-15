@@ -8,9 +8,9 @@ import { loadFunnelNotes } from "@/components/funnel/notesStore";
 import { ResultsView } from "@/components/funnel/ResultsView";
 
 /** Just enough shape-checking that stale or hand-edited storage can't crash the page. */
-function looksLikeInput(v: unknown): v is BorrowerInput {
+export function looksLikeInput(v: unknown): v is BorrowerInput {
   const o = v as Partial<BorrowerInput> | null;
-  return !!o && typeof o.agi === "number" && typeof o.dependents === "number" && typeof o.filingStatus === "string" && Array.isArray(o.loans);
+  return !!o && typeof o.agi === "number" && typeof o.dependents === "number" && typeof o.filingStatus === "string" && typeof o.state === "string" && Array.isArray(o.loans);
 }
 
 function run(input: BorrowerInput | null): { comparison: PlanComparison | null; filing?: FilingComparison } {
@@ -48,7 +48,7 @@ export function ResultsScreen() {
 
   if (saved === undefined) {
     return (
-      <p className="text-sm text-muted-foreground" aria-live="polite">
+      <p className="mx-auto max-w-6xl px-4 py-12 text-sm text-slate-600 sm:px-6" aria-live="polite">
         Loading your results…
       </p>
     );

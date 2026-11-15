@@ -3,7 +3,7 @@ import { formatUSD } from "@/lib/format";
 
 // docs/research/08-student-loan-deep-dive.md §H "Letter templates" (6.5), verbatim with brand + date filled in.
 export const LETTER_HEADER =
-  "Template only. You fill it in, check it, and send it yourself. Student Loan Guardian does not send letters, does not represent you, and is not a law firm. This template is general information, not legal advice, and not a substitute for the advice of an attorney. Check every fact and date before sending, keep a copy, and use your servicer's official address or secure message center. Do not include your FSA ID password, and include only the identifiers your servicer requests. For free help, contact your servicer, the Federal Student Aid Ombudsman through StudentAid.gov, or a local legal aid office. Not affiliated with the U.S. Department of Education or your servicer. Based on rules as of November 1, 2026.";
+  "Template only. You fill it in, check it, and send it yourself. Owen does not send letters, does not represent you, and is not a law firm. This template is general information, not legal advice, and not a substitute for the advice of an attorney. Check every fact and date before sending, keep a copy, and use your servicer's official address or secure message center. Do not include your FSA ID password, and include only the identifiers your servicer requests. For free help, contact your servicer, the Federal Student Aid Ombudsman through StudentAid.gov, or a local legal aid office. Not affiliated with the U.S. Department of Education or your servicer. Based on rules as of November 1, 2026.";
 
 export const PLAN_NAMES: Record<PlanId, string> = {
   RAP: "Repayment Assistance Plan (RAP)",

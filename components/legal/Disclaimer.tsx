@@ -5,9 +5,9 @@ import { DISCLAIMERS } from "./texts";
 
 export type DisclaimerVariant = "footer" | "hero" | "results" | "paywall" | "letter" | "audit";
 
-// Spec: NY §703 requires the hero disclaimer block to render at >=12px, bold. Inline style keeps
+// Spec: NY §703 requires the hero disclaimer block at >=12-point (16px), bold. Inline style keeps
 // this guarantee independent of whatever default text size/weight the other variants use.
-const HERO_STYLE = { fontSize: "14px", fontWeight: 700 } as const;
+const HERO_STYLE = { fontSize: "16px", fontWeight: 700 } as const;
 
 export function Disclaimer({ variant }: { variant: DisclaimerVariant }) {
   const isHero = variant === "hero";

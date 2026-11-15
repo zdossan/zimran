@@ -34,11 +34,11 @@ describe("Disclaimer", () => {
     expect(node).toBeInTheDocument();
   });
 
-  it("hero variant is rendered at >=12px and bold (spec: NY §703)", () => {
+  it("hero variant is rendered at >=12pt (16px) and bold (NY §703: 12-point bold)", () => {
     render(<Disclaimer variant="hero" />);
     const node = screen.getByText(/may not be the best or only option/);
     const style = getComputedStyle(node);
-    expect(parseFloat(style.fontSize)).toBeGreaterThanOrEqual(12);
+    expect(parseFloat(style.fontSize)).toBeGreaterThanOrEqual(16);
     expect(["bold", "700", "800", "900"]).toContain(style.fontWeight);
   });
 
