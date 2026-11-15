@@ -78,6 +78,52 @@ describe("Paywall", () => {
     expect(picker.className).toMatch(/\bflex-wrap\b/);
   });
 
+  it("shows both prices up front and says exactly what will be charged for the chosen plan", async () => {
+    vi.mocked(getEntitlement).mockResolvedValue({ pro: false, paidStateBlocked: false });
+
+    render(
+      <Paywall feature="action-plan">
+        <div>plan</div>
+      </Paywall>
+    );
+
+    expect(await screen.findByRole("radio", { name: /Monthly/ })).toHaveTextContent("$9");
+    expect(screen.getByRole("radio", { name: /Annual/ })).toHaveTextContent("$79");
+    expect(screen.getByText("Tick the box above to continue.")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("checkbox"));
+    expect(screen.getByText("You'll be charged $9 today, then every month until you cancel.")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("radio", { name: /Annual/ }));
+    expect(screen.getByRole("radio", { name: /Annual/ })).toHaveAttribute("aria-checked", "true");
+    expect(screen.getByText("You'll be charged $79 today, then every year until you cancel.")).toBeInTheDocument();
+  });
+
+  it("shows the chosen price large, with the annual plan's monthly equivalent and a secure-checkout note", async () => {
+    vi.mocked(getEntitlement).mockResolvedValue({ pro: false, paidStateBlocked: false });
+    render(
+      <Paywall feature="action-plan">
+        <div>plan</div>
+      </Paywall>
+    );
+    expect(await screen.findByTestId("price")).toHaveTextContent("$9/month");
+    fireEvent.click(screen.getByRole("radio", { name: /Annual/ }));
+    expect(screen.getByTestId("price")).toHaveTextContent("$79/year");
+    expect(screen.getByText("That's $6.58 a month.")).toBeInTheDocument();
+    expect(screen.getByText(/Secure checkout by Stripe/)).toBeInTheDocument();
+  });
+
+  it("puts the price before the fine print, and keeps the fine print visible (never collapsed)", async () => {
+    vi.mocked(getEntitlement).mockResolvedValue({ pro: false, paidStateBlocked: false });
+    const { container } = render(
+      <Paywall feature="action-plan">
+        <div>plan</div>
+      </Paywall>
+    );
+    const price = await screen.findByTestId("price");
+    const fine = container.querySelector('[data-variant="paywall"]')!;
+    expect(price.compareDocumentPosition(fine) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(fine.closest("details")).toBeNull();
+  });
+
   it("shows the block message instead of plan choices when the state is blocked", async () => {
     vi.mocked(getEntitlement).mockResolvedValue({ pro: false, paidStateBlocked: true });
 

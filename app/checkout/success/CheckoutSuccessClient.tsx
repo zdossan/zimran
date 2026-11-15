@@ -9,6 +9,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { buttonClass } from "@/components/brand/kit";
 import { getBrowserClient } from "@/lib/supabase/client";
 
 type Status = "loading" | "unlocked" | "error";
@@ -96,12 +97,25 @@ export function CheckoutSuccessClient({ sessionId }: { sessionId: string | null 
   }
 
   return (
-    <section className="space-y-4">
-      <p className="text-lg font-semibold">You&apos;re unlocked</p>
-      <div className="flex gap-4 text-sm underline">
-        <Link href="/results">Back to results</Link>
-        <Link href="/audit">Go to audit</Link>
+    <section className="space-y-5">
+      <div className="space-y-1">
+        <p className="text-2xl font-semibold">You&apos;re unlocked</p>
+        <p className="text-base text-muted-foreground">Your dated action plan, letters and Owen report are ready.</p>
       </div>
+      <Link href="/paywall" className={buttonClass("primary", "w-full sm:w-auto")}>
+        See my dated action plan
+      </Link>
+      <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm font-medium text-brand-800">
+        <Link href="/results" className="py-2 underline underline-offset-4">
+          Back to results
+        </Link>
+        <Link href="/audit" className="py-2 underline underline-offset-4">
+          Go to audit
+        </Link>
+      </div>
+      <p className="text-sm text-muted-foreground">
+        On another phone or computer? Open Pricing, choose “Restore access” and enter the email you paid with. We&apos;ll send you a code.
+      </p>
       <Button type="button" variant="outline" disabled={portalLoading} onClick={handleManageSubscription}>
         Manage subscription
       </Button>

@@ -4,6 +4,7 @@
 // Suspense boundary — see CheckoutSuccessClient.tsx for why useSearchParams() itself isn't
 // used here); the actual confirm call and the "Manage subscription" button live in the client
 // child, since this stack's Supabase session only exists in the browser.
+import { Card } from "@/components/brand/kit";
 import { CheckoutSuccessClient } from "./CheckoutSuccessClient";
 
 export default async function CheckoutSuccessPage({
@@ -12,5 +13,11 @@ export default async function CheckoutSuccessPage({
   searchParams: Promise<{ session_id?: string }>;
 }) {
   const params = await searchParams;
-  return <CheckoutSuccessClient sessionId={params.session_id ?? null} />;
+  return (
+    <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
+      <Card>
+        <CheckoutSuccessClient sessionId={params.session_id ?? null} />
+      </Card>
+    </div>
+  );
 }
